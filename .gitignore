@@ -2,3 +2,11 @@ node_modules/
 dist/
 *.exe
 *.dll
+
+dist/
+
+node_modules/
+
+node_modules/
+
+dist/
