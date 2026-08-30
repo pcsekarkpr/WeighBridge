@@ -1,0 +1,133 @@
+{
+  "name": "weighbridge-app",
+  "productName": "PC Weighbridge",
+  "version": "1.0.0",
+  "description": "PC Weighbridge Application for Heavy Vehicles",
+  "main": ".vite/build/main.js",
+  "private": true,
+  "scripts": {
+    "start": "set ELECTRON_SKIP_NODE_LIB_CHECK=true&& electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "rebuild": "electron-rebuild",
+    "build": "electron-forge package && electron-builder"
+  },
+  "keywords": [],
+  "author": "chandru",
+  "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "asar": true,
+        "name": "PC Weighbridge",
+        "executableName": "weighbridge-app"
+      },
+      "rebuildConfig": {
+        "onlyModules": []
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "weighbridge_app"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "win32"
+          ]
+        }
+      ],
+      "plugins": [
+        {
+          "name": "@electron-forge/plugin-auto-unpack-natives",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/plugin-vite",
+          "config": {
+            "build": [
+              {
+                "entry": "src/main.js",
+                "config": "vite.main.config.mjs"
+              },
+              {
+                "entry": "src/preload.js",
+                "config": "vite.preload.config.mjs"
+              }
+            ],
+            "renderer": [
+              {
+                "name": "main_window",
+                "config": "vite.renderer.config.mjs"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "build": {
+    "appId": "com.weighbridge.app",
+    "productName": "PC Weighbridge",
+    "npmRebuild": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      ".vite/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/node_modules/serialport/**/*",
+      "**/node_modules/@serialport/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "PC Weighbridge"
+    }
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.11.2",
+    "@electron-forge/maker-deb": "^7.11.2",
+    "@electron-forge/maker-rpm": "^7.11.2",
+    "@electron-forge/maker-squirrel": "^7.11.2",
+    "@electron-forge/maker-zip": "^7.11.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.2",
+    "@electron-forge/plugin-fuses": "^7.11.2",
+    "@electron-forge/plugin-vite": "^7.11.2",
+    "@electron/fuses": "^1.8.0",
+    "@electron/rebuild": "^4.2.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.5.4",
+    "electron": "43.1.1",
+    "electron-builder": "^26.15.3",
+    "postcss": "^8.5.19",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.1.5"
+  },
+  "dependencies": {
+    "@serialport/bindings-cpp": "^13.0.1",
+    "@serialport/parser-readline": "^13.0.0",
+    "axios": "^1.20.0",
+    "electron-squirrel-startup": "^1.0.1",
+    "pg": "^8.22.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "serialport": "^12.0.0",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}

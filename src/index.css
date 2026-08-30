@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* Custom layout defaults to let the app spread edge-to-edge cleanly */
+@layer base {
+  body {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    background-color: #f1f5f9; /* slate-100 fallback */
+  }
+}

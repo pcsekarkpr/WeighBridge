@@ -1,0 +1,110 @@
+1,1,ticketNo,Ticket Sl No.,40,50,12,Courier New,bold
+11,2,ticketNo,Ticket Sl No.,40,50,12,Courier New,bold
+731,6,ticketNo,Ticket Sl No.,40,50,12,Courier New,bold
+31,4,ticketNo,Ticket Sl No.,40,50,12,Courier New,bold
+741,7,ticketNo,Ticket Sl No.,137,142,12,Courier New,bold
+751,7,ticketNo,Ticket Sl No. (S2),341,140,12,Courier New,bold
+691,5,ticketNo,Ticket Sl No.,40,50,12,Courier New,bold
+761,7,ticketNo,Ticket Sl No. (Copy),546,142,12,Courier New,bold
+982,3,ticketNo,Ticket Sl No.,137,142,12,Courier New,bold
+983,3,ticketNo,Ticket Sl No. (S2),341,142,12,Courier New,bold
+984,3,ticketNo,Ticket Sl No. (Copy),546,142,12,Courier New,bold
+985,3,vehicleNo,Vehicle Number,137,230,14,Courier New,bold
+986,3,vehicleNo,Vehicle Number (S2),341,230,14,Courier New,bold
+987,3,vehicleNo,Vehicle Number (S2) (Copy),546,230,14,Courier New,bold
+988,3,date,Current Date,137,175,12,Courier New,normal
+989,3,date,Current Date (S2),341,175,12,Courier New,normal
+990,3,date,Current Date (S2) (Copy),546,175,12,Courier New,normal
+991,3,time,Current Time,137,205,12,Courier New,normal
+992,3,time,Current Time (S2),341,205,12,Courier New,normal
+993,3,time,Current Time (S2) (Copy),546,205,12,Courier New,normal
+994,3,material,Material Name,137,261,12,Courier New,normal
+995,3,material,Material Name (S2),341,258,12,Courier New,normal
+996,3,material,Material Name (S2) (Copy),546,259,12,Courier New,normal
+997,3,party,Party / Customer,137,289,12,Courier New,normal
+998,3,party,Party / Customer (S2),546,289,12,Courier New,normal
+999,3,party,Party / Customer (S2) (Copy),341,289,12,Courier New,normal
+1000,3,gross,Gross Wt (kg),137,344,16,Arial,bold
+1001,3,gross,Gross Wt (kg) (S2),546,344,16,Arial,bold
+1002,3,gross,Gross Wt (kg) (S2) (Copy),341,344,16,Arial,bold
+1003,3,tare,Square Wt (kg),137,370,16,Arial,bold
+1004,3,tare,Square Wt (kg) (S2),546,372,16,Arial,bold
+1005,3,tare,Square Wt (kg) (S2) (Copy),341,372,16,Arial,bold
+1006,3,charges,Weighment Fee,137,315,12,Courier New,normal
+1007,3,charges,Weighment Fee (S2),341,315,12,Courier New,normal
+1008,3,charges,Weighment Fee (S2) (Copy),546,317,12,Courier New,normal
+981,3,net,Net Wt (kg),137,398,16,Arial,bold
+1009,3,net,Net Wt (kg) (S2),341,398,16,Arial,bold
+1010,3,net,Net Wt (kg) (S2) (Copy),547,398,16,Arial,bold
+2,1,vehicleNo,Vehicle Number,220,50,14,Courier New,bold
+12,2,vehicleNo,Vehicle Number,220,50,14,Courier New,bold
+732,6,vehicleNo,Vehicle Number,220,50,14,Courier New,bold
+32,4,vehicleNo,Vehicle Number,220,50,14,Courier New,bold
+742,7,vehicleNo,Vehicle Number,137,230,14,Courier New,bold
+752,7,vehicleNo,Vehicle Number (S2),341,230,14,Courier New,bold
+692,5,vehicleNo,Vehicle Number,220,50,14,Courier New,bold
+763,7,vehicleNo,Vehicle Number (S2) (Copy),546,230,14,Courier New,bold
+3,1,date,Current Date,40,90,12,Courier New,normal
+13,2,date,Current Date,40,90,12,Courier New,normal
+733,6,date,Current Date,40,90,12,Courier New,normal
+33,4,date,Current Date,40,90,12,Courier New,normal
+743,7,date,Current Date,137,168,12,Courier New,normal
+753,7,date,Current Date (S2),341,168,12,Courier New,normal
+693,5,date,Current Date,40,90,12,Courier New,normal
+762,7,date,Current Date (S2) (Copy),546,172,12,Courier New,normal
+4,1,time,Current Time,220,90,12,Courier New,normal
+14,2,time,Current Time,220,90,12,Courier New,normal
+734,6,time,Current Time,220,90,12,Courier New,normal
+34,4,time,Current Time,220,90,12,Courier New,normal
+744,7,time,Current Time,137,205,12,Courier New,normal
+754,7,time,Current Time (S2),341,205,12,Courier New,normal
+694,5,time,Current Time,220,90,12,Courier New,normal
+764,7,time,Current Time (S2) (Copy),546,205,12,Courier New,normal
+5,1,material,Material Name,40,130,12,Courier New,normal
+15,2,material,Material Name,40,130,12,Courier New,normal
+735,6,material,Material Name,40,130,12,Courier New,normal
+35,4,material,Material Name,40,130,12,Courier New,normal
+745,7,material,Material Name,137,261,12,Courier New,normal
+755,7,material,Material Name (S2),341,258,12,Courier New,normal
+695,5,material,Material Name,40,130,12,Courier New,normal
+765,7,material,Material Name (S2) (Copy),546,259,12,Courier New,normal
+6,1,party,Party / Customer,40,170,12,Courier New,normal
+16,2,party,Party / Customer,40,170,12,Courier New,normal
+736,6,party,Party / Customer,40,170,12,Courier New,normal
+36,4,party,Party / Customer,40,170,12,Courier New,normal
+746,7,party,Party / Customer,137,285,12,Courier New,normal
+756,7,party,Party / Customer (S2),546,285,12,Courier New,normal
+696,5,party,Party / Customer,40,170,12,Courier New,normal
+766,7,party,Party / Customer (S2) (Copy),341,285,12,Courier New,normal
+7,1,gross,Gross Wt (kg),40,220,16,Arial,bold
+17,2,gross,Gross Wt (kg),40,220,16,Arial,bold
+737,6,gross,Gross Wt (kg),40,220,16,Arial,bold
+37,4,gross,Gross Wt (kg),40,220,16,Arial,bold
+747,7,gross,Gross Wt (kg),137,344,16,Arial,bold
+757,7,gross,Gross Wt (kg) (S2),546,344,16,Arial,bold
+697,5,gross,Gross Wt (kg),40,220,16,Arial,bold
+770,7,gross,Gross Wt (kg) (S2) (Copy),341,344,16,Arial,bold
+8,1,tare,Square Wt (kg),220,220,16,Arial,bold
+18,2,tare,Square Wt (kg),220,220,16,Arial,bold
+738,6,tare,Square Wt (kg),220,220,16,Arial,bold
+38,4,tare,Square Wt (kg),220,220,16,Arial,bold
+748,7,tare,Square Wt (kg),137,370,16,Arial,bold
+758,7,tare,Square Wt (kg) (S2),546,372,16,Arial,bold
+698,5,tare,Square Wt (kg),220,220,16,Arial,bold
+768,7,tare,Square Wt (kg) (S2) (Copy),341,372,16,Arial,bold
+10,1,charges,Weighment Fee,40,310,12,Courier New,normal
+20,2,charges,Weighment Fee,40,310,12,Courier New,normal
+740,6,charges,Weighment Fee,40,310,12,Courier New,normal
+40,4,charges,Weighment Fee,40,310,12,Courier New,normal
+750,7,charges,Weighment Fee,137,315,12,Courier New,normal
+760,7,charges,Weighment Fee (S2),341,315,12,Courier New,normal
+767,7,charges,Weighment Fee (S2) (Copy),546,317,12,Courier New,normal
+700,5,charges,Weighment Fee,40,310,12,Courier New,normal
+9,1,net,Net Wt (kg),130,260,16,Arial,bold
+19,2,net,Net Wt (kg),130,260,16,Arial,bold
+739,6,net,Net Wt (kg),130,260,16,Arial,bold
+39,4,net,Net Wt (kg),130,260,16,Arial,bold
+749,7,net,Net Wt (kg),137,398,16,Arial,bold
+759,7,net,Net Wt (kg) (S2),341,398,16,Arial,bold
+699,5,net,Net Wt (kg),130,260,16,Arial,bold
+769,7,net,Net Wt (kg) (S2) (Copy),547,398,16,Arial,bold
