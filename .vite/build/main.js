@@ -1344,10 +1344,10 @@ var require_pg_connection_string = /* @__PURE__ */ __commonJSMin(((exports, modu
 		if (config.ssl === "0") config.ssl = false;
 		if (config.sslcert || config.sslkey || config.sslrootcert || config.sslmode) config.ssl = {};
 		if (config.sslnegotiation === "direct" && config.ssl === void 0) config.ssl = true;
-		const fs$4 = config.sslcert || config.sslkey || config.sslrootcert ? require("fs") : null;
-		if (config.sslcert) config.ssl.cert = fs$4.readFileSync(config.sslcert).toString();
-		if (config.sslkey) config.ssl.key = fs$4.readFileSync(config.sslkey).toString();
-		if (config.sslrootcert) config.ssl.ca = fs$4.readFileSync(config.sslrootcert).toString();
+		const fs$5 = config.sslcert || config.sslkey || config.sslrootcert ? require("fs") : null;
+		if (config.sslcert) config.ssl.cert = fs$5.readFileSync(config.sslcert).toString();
+		if (config.sslkey) config.ssl.key = fs$5.readFileSync(config.sslkey).toString();
+		if (config.sslrootcert) config.ssl.ca = fs$5.readFileSync(config.sslrootcert).toString();
 		if (options.useLibpqCompat && config.uselibpqcompat) throw new Error("Both useLibpqCompat and uselibpqcompat are set. Please use only one of them.");
 		if (config.uselibpqcompat === "true" || options.useLibpqCompat) switch (config.sslmode) {
 			case "disable":
@@ -3019,13 +3019,13 @@ var require_helper = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 //#region node_modules/pgpass/lib/index.js
 var require_lib$1 = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	require("path");
-	var fs$3 = require("fs");
+	var fs$4 = require("fs");
 	var helper = require_helper();
 	module.exports = function(connInfo, cb) {
 		var file = helper.getFileName();
-		fs$3.stat(file, function(err, stat) {
+		fs$4.stat(file, function(err, stat) {
 			if (err || !helper.usePgPass(stat, file)) return cb(void 0);
-			var st = fs$3.createReadStream(file);
+			var st = fs$4.createReadStream(file);
 			helper.getPassword(connInfo, st, cb);
 		});
 	};
@@ -4294,7 +4294,7 @@ var require_lib = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 //#region src/db.js
 var require_db = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	var { Pool } = require_lib();
-	var fs$2 = require("fs");
+	var fs$3 = require("fs");
 	var path$2 = require("path");
 	var { app: app$2 } = require("electron");
 	var configPath = path$2.join(app$2.getPath("userData"), "wb_printer_config.json");
@@ -4307,7 +4307,7 @@ var require_db = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	});
 	function getDefaultFormatId() {
 		try {
-			if (fs$2.existsSync(configPath)) return JSON.parse(fs$2.readFileSync(configPath, "utf8")).default_format_id || null;
+			if (fs$3.existsSync(configPath)) return JSON.parse(fs$3.readFileSync(configPath, "utf8")).default_format_id || null;
 		} catch (err) {
 			console.error("Error reading default print configuration pointer:", err);
 		}
@@ -4319,9 +4319,9 @@ var require_db = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	function setDefaultFormatId(formatId) {
 		try {
 			let currentConfig = {};
-			if (fs$2.existsSync(configPath)) currentConfig = JSON.parse(fs$2.readFileSync(configPath, "utf8"));
+			if (fs$3.existsSync(configPath)) currentConfig = JSON.parse(fs$3.readFileSync(configPath, "utf8"));
 			currentConfig.default_format_id = formatId ? parseInt(formatId, 10) : null;
-			fs$2.writeFileSync(configPath, JSON.stringify(currentConfig, null, 2));
+			fs$3.writeFileSync(configPath, JSON.stringify(currentConfig, null, 2));
 			return true;
 		} catch (err) {
 			console.error("Error writing default print configuration pointer:", err);
@@ -4693,24 +4693,48 @@ var require_WhatsappService = /* @__PURE__ */ __commonJSMin(((exports, module) =
 	var { Client, LocalAuth } = require("whatsapp-web.js");
 	var QRCode = require("qrcode");
 	var { app: app$1 } = require("electron");
+	var path$1 = require("path");
+	var fs$2 = require("fs");
 	var isReady = false;
 	var client = null;
-	var path$1 = require("path");
-	function initWhatsApp() {
-		if (client) return;
+	function getExecutablePath() {
+		if (!app$1 || !app$1.isPackaged) return void 0;
+		const unpackedPath = path$1.join(process.resourcesPath, "app.asar.unpacked", "node_modules", "puppeteer", ".local-chromium");
+		return fs$2.existsSync(unpackedPath) ? unpackedPath : void 0;
+	}
+	async function initWhatsApp(mainWindow) {
+		if (isReady && client) {
+			console.log("⚡ WhatsApp is already connected! Notifying UI...");
+			if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("whatsapp-status", { connected: true });
+			return;
+		}
+		if (client) {
+			console.log("🔄 Cleaning up existing WhatsApp client before re-initialization...");
+			isReady = false;
+			client.removeAllListeners();
+			try {
+				await client.destroy();
+			} catch (e) {
+				console.error("Error destroying previous instance:", e.message);
+			}
+			client = null;
+		}
 		console.log("🔄 Initializing WhatsApp Web Client...");
 		const userDataPath = app$1 ? app$1.getPath("userData") : path$1.join(__dirname, "../.wwebjs_auth");
+		const authDirectory = path$1.join(userDataPath, "whatsapp_auth");
+		if (!fs$2.existsSync(authDirectory)) fs$2.mkdirSync(authDirectory, { recursive: true });
 		client = new Client({
 			authStrategy: new LocalAuth({
 				clientId: "weighbridge-app",
-				dataPath: path$1.join(userDataPath, "whatsapp_auth")
+				dataPath: authDirectory
 			}),
 			webVersionCache: {
 				type: "remote",
-				remotePath: "https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014587000-alpha.html"
+				remotePath: "https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.3000.1014133500-alpha.html"
 			},
 			puppeteer: {
 				headless: true,
+				executablePath: getExecutablePath(),
 				args: [
 					"--no-sandbox",
 					"--disable-setuid-sandbox",
@@ -4725,7 +4749,7 @@ var require_WhatsappService = /* @__PURE__ */ __commonJSMin(((exports, module) =
 		client.on("loading_screen", (percent, message) => {
 			console.log(`⏳ Loading WhatsApp Web: ${percent}% - ${message}`);
 		});
-		client.on("qr", (qr) => {
+		client.on("qr", async (qr) => {
 			isReady = false;
 			console.log("\n========================================");
 			console.log("  SCAN THIS QR CODE WITH YOUR WHATSAPP  ");
@@ -4734,37 +4758,64 @@ var require_WhatsappService = /* @__PURE__ */ __commonJSMin(((exports, module) =
 				type: "terminal",
 				small: true
 			}, (err, url) => {
-				if (err) console.error("Error printing QR Code:", err);
-				else console.log(url);
+				if (!err) console.log(url);
 			});
+			if (mainWindow && !mainWindow.isDestroyed()) try {
+				const qrDataUrl = await QRCode.toDataURL(qr);
+				mainWindow.webContents.send("whatsapp-qr", qrDataUrl);
+			} catch (err) {
+				console.error("Failed to process QR for Renderer:", err);
+			}
 		});
 		client.on("ready", () => {
 			isReady = true;
 			console.log("✅ WhatsApp Web Client is Ready and Connected!");
+			if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("whatsapp-status", { connected: true });
 		});
 		client.on("auth_failure", (msg) => {
 			console.error("❌ WhatsApp Auth Failure:", msg);
 			isReady = false;
 		});
-		client.on("disconnected", (reason) => {
+		client.on("disconnected", async (reason) => {
 			console.log("⚠️ WhatsApp Disconnected:", reason);
 			isReady = false;
+			if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send("whatsapp-status", { connected: false });
+			if (client) try {
+				await client.destroy();
+			} catch (err) {
+				console.error("Error destroying client after disconnect:", err.message);
+			} finally {
+				client = null;
+			}
 		});
 		try {
-			client.initialize();
+			await client.initialize();
 		} catch (err) {
 			console.error("❌ Failed to initialize Puppeteer:", err);
+			isReady = false;
+			client = null;
 		}
 	}
 	async function sendWhatsAppMessage(phone, message) {
-		if (!isReady) throw new Error("WhatsApp is not ready. Scan the QR code in your console terminal.");
-		const cleanPhone = phone.trim().replace(/\D/g, "");
-		const chatId = `${cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone}@c.us`;
-		return await client.sendMessage(chatId, message);
+		if (!isReady || !client) throw new Error("WhatsApp is not ready. Please scan the QR code first.");
+		const cleanPhone = String(phone).trim().replace(/\D/g, "");
+		const formattedNumber = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+		const chatId = `${formattedNumber}@c.us`;
+		try {
+			if (!await client.isRegisteredUser(chatId)) throw new Error(`Phone number ${formattedNumber} is not registered on WhatsApp.`);
+			return await client.sendMessage(chatId, message);
+		} catch (err) {
+			console.error("Failed to send WhatsApp message:", err.message);
+			throw err;
+		}
+	}
+	function getWhatsAppStatus() {
+		return { connected: isReady };
 	}
 	module.exports = {
 		initWhatsApp,
-		sendWhatsAppMessage
+		sendWhatsAppMessage,
+		getWhatsAppStatus
 	};
 }));
 //#endregion
@@ -4801,6 +4852,9 @@ function createWindow() {
 	else if (!app.isPackaged) mainWindow.loadURL("http://localhost:5173");
 	else mainWindow.loadFile(path.join(__dirname, `../renderer/${forgeName}/index.html`));
 }
+ipcMain.on("init-whatsapp", () => {
+	initWhatsApp(mainWindow);
+});
 ipcMain.handle("send-whatsapp-msg", async (event, { phone, message }) => {
 	return await sendWhatsAppMessage(phone, message);
 });
@@ -4946,7 +5000,7 @@ ipcMain.handle("print-raw-ticket", async (event, payload) => {
 		const COL3_THRESHOLD = 520;
 		const COL1_SHIFT = -45;
 		const COL2_SHIFT = 38;
-		const COL3_SHIFT = 140;
+		const COL3_SHIFT = 108;
 		const psScript = `
 $ErrorActionPreference = 'Stop';
 Add-Type -AssemblyName System.Drawing;

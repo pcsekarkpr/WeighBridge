@@ -49,6 +49,9 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${forgeName}/index.html`));
   }
 }
+ipcMain.on('init-whatsapp', () => {
+  initWhatsApp(mainWindow); // Ensure mainWindow is passed here!
+});
 
 
 ipcMain.handle('send-whatsapp-msg', async (event, { phone, message }) => {
@@ -251,7 +254,9 @@ ipcMain.handle('print-raw-ticket', async (event, payload) => {
     // EXACT INDIVIDUAL COLUMN OFFSETS
     const COL1_SHIFT = -45; // Pulls Column 1 LEFT into its box
     const COL2_SHIFT = 38;  // Column 2 is aligned
-    const COL3_SHIFT = 140; // Pushes Column 3 RIGHT into its box
+
+    const COL3_SHIFT = 108; // Pushes Column 3 RIGHT into its box
+
 
     const drawCommands = (layout.fields || [])
       .map((f) => {

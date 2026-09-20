@@ -82,7 +82,11 @@
     ],
     "asarUnpack": [
       "**/node_modules/serialport/**/*",
-      "**/node_modules/@serialport/**/*"
+
+  
+      "**/node_modules/puppeteer/**/*",
+      "**/node_modules/whatsapp-web.js/**/*"
+
     ],
     "win": {
       "target": [

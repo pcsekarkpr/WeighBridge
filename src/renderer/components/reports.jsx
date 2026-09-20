@@ -25,9 +25,13 @@ export default function ReportsView({ onClose }) {
     upiTotal: 0
   });
 
+  // SINGLE ROW SELECTION STATE
+  const [selectedRowId, setSelectedRowId] = useState(null);
+
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(50); // You can change this to 25 or 10 to test it with 28 rows!
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+
 
   // Sequential Refs for Enter Key Navigation Matrix
   const vehicleNoRef = useRef(null);
@@ -117,6 +121,8 @@ export default function ReportsView({ onClose }) {
 
   const processRecords = (records) => {
     setTransactions(records);
+    setSelectedRowId(null); // Clear single row selection on new search
+
     let total = 0, cash = 0, upi = 0;
     const uniqueVehicleSet = new Set();
     
@@ -151,6 +157,11 @@ export default function ReportsView({ onClose }) {
   
   // Sliced viewport selection to be mapped in table body layout below
   const currentPagedRows = transactions.slice(indexOfFirstRow, indexOfLastRow);
+
+  // SINGLE SELECTION HANDLER
+  const handleToggleRow = (id) => {
+    setSelectedRowId(prev => (prev === id ? null : id));
+  };
 
   return (
     <div className="fixed inset-0 bg-slate-100 z-50 flex flex-col p-3 h-screen w-screen font-sans text-slate-800 select-none overflow-hidden max-h-screen">
@@ -332,7 +343,8 @@ export default function ReportsView({ onClose }) {
             disabled={transactions.length === 0}
             className="w-full bg-slate-900 hover:bg-black text-white font-bold text-base py-3.5 rounded-xl transition shadow-md mt-4 disabled:opacity-40 tracking-wider"
           >
-            🖨️ Print Selected Records (அச்சிடுக)
+            🖨️ {selectedRowId !== null ? 'Print Selected Record' : 'Print All Records'} (அச்சிடுக)
+
           </button>
         </div>
 
@@ -343,18 +355,29 @@ export default function ReportsView({ onClose }) {
               Detailed Transaction Ledger <span className="text-xs font-normal text-slate-400 italic lowercase">(பரிவர்த்தனை பட்டியல்)</span>
             </h3>
             {transactions.length > 0 && (
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
-                <span>Rows:</span>
-                <select 
-                  value={rowsPerPage} 
-                  onChange={e => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
-                  className="bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 outline-none font-semibold text-slate-700 cursor-pointer focus:border-indigo-500"
-                >
-                  <option value={25}>25</option>
-                  <option value={50}>50</option>
-                  <option value={100}>100</option>
-                  <option value={200}>200</option>
-                </select>
+              <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
+                {selectedRowId !== null && (
+                  <button 
+                    onClick={() => setSelectedRowId(null)}
+                    className="text-indigo-600 hover:underline"
+                  >
+                    Clear Selection
+                  </button>
+                )}
+                <div className="flex items-center gap-2">
+                  <span>Rows:</span>
+                  <select 
+                    value={rowsPerPage} 
+                    onChange={e => { setRowsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+                    className="bg-slate-100 border border-slate-300 rounded px-1.5 py-0.5 outline-none font-semibold text-slate-700 cursor-pointer focus:border-indigo-500"
+                  >
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                    <option value={200}>200</option>
+                  </select>
+                </div>
+
               </div>
             )}
           </div>
@@ -363,47 +386,72 @@ export default function ReportsView({ onClose }) {
             <table className="w-full text-left border-collapse table-fixed text-base">
               <thead className="sticky top-0 bg-slate-200 z-10 border-b border-slate-300 print:static print:bg-white">
                 <tr className="text-slate-700 font-bold text-sm">
+                  <th className="p-3 w-[6%] text-center print:hidden">
+                    Select
+                  </th>
                   <th className="p-3 w-[14%]">Slip # <br/><span className="text-xs text-slate-500 font-normal">சீட்டு எண்</span></th>
-                  <th className="p-3 w-[24%]">Vehicle Number <br/><span className="text-xs text-slate-500 font-normal">வண்டி எண்</span></th>
-                  <th className="p-3 w-[22%]">First Weight (kg) <br/><span className="text-xs text-slate-500 font-normal">எடை</span></th>
-                  <th className="p-3 w-[18%]">Second weight <br/><span className="text-xs text-slate-500 font-normal">நிலை</span></th>
-                  <th className="p-3 w-[12%]">Mode <br/><span className="text-xs text-slate-500 font-normal">வகை</span></th>
-                  <th className="p-3 text-right w-[14%]">Charges <br/><span className="text-xs text-slate-500 font-normal">கட்டணம்</span></th>
+                  <th className="p-3 w-[22%]">Vehicle Number <br/><span className="text-xs text-slate-500 font-normal">வண்டி எண்</span></th>
+                  <th className="p-3 w-[20%]">First Weight (kg) <br/><span className="text-xs text-slate-500 font-normal">எடை</span></th>
+                  <th className="p-3 w-[17%]">Second weight <br/><span className="text-xs text-slate-500 font-normal">நிலை</span></th>
+                  <th className="p-3 w-[10%]">Mode <br/><span className="text-xs text-slate-500 font-normal">வகை</span></th>
+                  <th className="p-3 text-right w-[11%]">Charges <br/><span className="text-xs text-slate-500 font-normal">கட்டணம்</span></th>
+
                 </tr>
               </thead>
               <tbody className="text-slate-700 font-medium divide-y divide-slate-300/50">
                 {currentPagedRows.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="p-12 text-center text-slate-400 text-lg font-medium italic">No transactions found matching criteria parameters</td>
+                    <td colSpan="7" className="p-12 text-center text-slate-400 text-lg font-medium italic">No transactions found matching criteria parameters</td>
                   </tr>
                 ) : (
-                  /* FIX EFFECTED HERE: Mapping the paged slice array explicitly */
-                  currentPagedRows.map((row, index) => (
-                    <tr 
-                      key={row.id || (indexOfFirstRow + index)} 
-                      className="even:bg-slate-200/60 odd:bg-white hover:bg-indigo-100/50 transition-colors duration-150 print:break-inside-avoid"
-                    >
-                      <td className="p-3 font-mono text-emerald-800 font-bold text-base">
-                        #{row.ticket_number || row.id || (indexOfFirstRow + index + 1)}
-                      </td>
-                      <td className="p-3 font-bold uppercase text-slate-900 truncate text-base">
-                        {row.vehicle_number}
-                      </td>
-                      <td className="p-3 font-bold text-slate-800 tabular-nums text-base">
-                        {(parseInt(row.first_weight) || parseInt(row.current_weight)).toLocaleString()} kg
-                      </td>
-                      <td className="p-3 text-sm font-semibold text-slate-600">
-                        {row.first_weight ? `${(parseInt(row.current_weight) || 0).toLocaleString()} kg` : "-"}                      </td>
-                      <td className="p-3 text-sm">
-                        <span className={`px-2 py-0.5 rounded font-extrabold text-xs tracking-wide ${String(row.payment_mode).toUpperCase() === 'UPI' ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
-                          {row.payment_mode || 'CASH'}
-                        </span>
-                      </td>
-                      <td className="p-3 text-right font-bold tabular-nums text-slate-900 text-base">
-                        ₹{(parseFloat(row.charges_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </td>
-                    </tr>
-                  ))
+                  currentPagedRows.map((row, index) => {
+                    const rowId = row.id || (indexOfFirstRow + index);
+                    const isSelected = selectedRowId === rowId;
+                    const hasSelection = selectedRowId !== null;
+
+                    return (
+                      <tr 
+                        key={rowId} 
+                        onClick={() => handleToggleRow(rowId)}
+                        className={`cursor-pointer transition-colors duration-150 ${
+                          isSelected ? 'bg-indigo-100/90 font-semibold ring-2 ring-indigo-500/50' : 'even:bg-slate-100/60 odd:bg-white hover:bg-slate-100'
+                        } ${
+                          hasSelection && !isSelected ? 'print:hidden' : 'print:break-inside-avoid'
+                        }`}
+                      >
+                        <td className="p-3 text-center print:hidden" onClick={(e) => e.stopPropagation()}>
+                          <input 
+                            type="radio"
+                            name="selected-transaction-row"
+                            checked={isSelected}
+                            onChange={() => handleToggleRow(rowId)}
+                            className="w-4 h-4 cursor-pointer accent-indigo-600"
+                          />
+                        </td>
+                        <td className="p-3 font-mono text-emerald-800 font-bold text-base">
+                          #{row.ticket_number || row.id || (indexOfFirstRow + index + 1)}
+                        </td>
+                        <td className="p-3 font-bold uppercase text-slate-900 truncate text-base">
+                          {row.vehicle_number}
+                        </td>
+                        <td className="p-3 font-bold text-slate-800 tabular-nums text-base">
+                          {(parseInt(row.first_weight) || parseInt(row.current_weight)).toLocaleString()} kg
+                        </td>
+                        <td className="p-3 text-sm font-semibold text-slate-600">
+                          {row.first_weight ? `${(parseInt(row.current_weight) || 0).toLocaleString()} kg` : "-"}
+                        </td>
+                        <td className="p-3 text-sm">
+                          <span className={`px-2 py-0.5 rounded font-extrabold text-xs tracking-wide ${String(row.payment_mode).toUpperCase() === 'UPI' ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                            {row.payment_mode || 'CASH'}
+                          </span>
+                        </td>
+                        <td className="p-3 text-right font-bold tabular-nums text-slate-900 text-base">
+                          ₹{(parseFloat(row.charges_amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </td>
+                      </tr>
+                    );
+                  })
+
                 )}
               </tbody>
             </table>

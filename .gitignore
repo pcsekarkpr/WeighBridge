@@ -1,12 +1,28 @@
+# Dependencies
 node_modules/
+
+# Build and distribution outputs
 dist/
+out/
+.vite/
+
+# Installer files & executables
 *.exe
-*.dll
+*.msi
+*.zip
+*.tar.gz
+*.dmg
+*.bin
+*.pak
 
-dist/
+# Log files
+*.log
+npm-debug.log*
 
-node_modules/
-
-node_modules/
-
-dist/
+# OS metadata
+.DS_Store
+Thumbs.db
+# Database & Logs
+*.sqlite
+*.db
+*.log

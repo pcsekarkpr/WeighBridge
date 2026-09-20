@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld("api", {
 	addParty: (partyName) => ipcRenderer.invoke("add-party", partyName),
 	sendSms: (payload) => ipcRenderer.invoke("send-sms", payload),
 	sendWhatsApp: (data) => ipcRenderer.invoke("send-whatsapp-msg", data),
+	initWhatsApp: () => ipcRenderer.send("init-whatsapp"),
 	getAllPrinterFormats: () => ipcRenderer.invoke("get-all-printer-formats"),
 	getPrinterConfig: (formatId) => ipcRenderer.invoke("get-printer-config", formatId),
 	printRawTicket: (data) => ipcRenderer.invoke("print-raw-ticket", data),
@@ -23,6 +24,16 @@ contextBridge.exposeInMainWorld("api", {
 		return () => {
 			ipcRenderer.removeListener("serial-weight-data", subscription);
 		};
+	},
+	onWhatsAppQr: (callback) => {
+		const listener = (_event, qrDataUrl) => callback(qrDataUrl);
+		ipcRenderer.on("whatsapp-qr", listener);
+		return () => ipcRenderer.removeListener("whatsapp-qr", listener);
+	},
+	onWhatsAppStatus: (callback) => {
+		const listener = (_event, status) => callback(status);
+		ipcRenderer.on("whatsapp-status", listener);
+		return () => ipcRenderer.removeListener("whatsapp-status", listener);
 	}
 });
 //#endregion

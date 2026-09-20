@@ -5,6 +5,7 @@ import SettingsView from './settings';
 import { useModelAlert } from './useModelAlert';
 import AlertModel from './AlertModel';
 import { printTicketWithDefaultLayout } from './PrinterSettingsManagement';
+
 import { formatDateTime } from './util';
 //import { createLogger } from 'vite';
 
@@ -436,7 +437,9 @@ export default function WeighbridgeDashboard() {
       } catch (err) {
         console.error("Transaction save error:", err);
         triggerModelAlert(
-          "Printing / Database Error",
+
+          "Save / Database Error",
+
           "Failed to process transaction save operations.",
           "தரவுத்தளத்தில் சேமிக்க  முடியவில்லை.",
           true,
@@ -444,11 +447,15 @@ export default function WeighbridgeDashboard() {
         );
       }
       ///let First Weight: Historical weight if linked ticket exists, otherwise active scale weight
-      const firstWeight = linkedTicketNo ? previousWeight : activeCurrentWeight;
+      const firstWeight = linkedTicketNo ? previousWeight : currentActiveWeight;
 
         // Second Weight: Active scale weight if linked ticket exists, otherwise 0
-      const secondWeight = linkedTicketNo ? activeCurrentWeight : 0;
-      const ntWeight = Math.abs(secondWeight - firstWeight);
+      const secondWeight = linkedTicketNo ? currentActiveWeight : 0;
+      const ntWeight = (firstWeight > 0 && secondWeight > 0)? Math.abs(secondWeight - firstWeight):'';
+      //const calculatedNet = (calculatedGross > 0 && calculatedTare > 0) 
+      //? Math.abs(calculatedGross - calculatedTare) 
+      //: 0;
+
 
       try{
         
@@ -459,11 +466,14 @@ export default function WeighbridgeDashboard() {
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           material: finalMaterialName,
           party: finalPartyName,
-          gross: calculatedGross ? String(firstWeight) : '',
-          tare: calculatedTare ? String(secondWeight) : '',
-          net: calculatedNet ? String(ntWeight) : '',
+
+          gross: firstWeight ? String(firstWeight) : '',
+          tare: secondWeight ? String(secondWeight) : '',
+          net: ntWeight ? String(ntWeight) : '',
           charges: amount ? String(amount) : '150.00'
         };
+         console.log("Print Data is");
+        console.table(printData);
 
         const shouldPrint = await triggerModelAlert(
           "Ticket Saved Successfully",
@@ -494,9 +504,11 @@ export default function WeighbridgeDashboard() {
         if(mobileNo)
         {
           //console.log("Mobile no to send:"+mobileNo);
-          let smsMessage =  "P.C. Weighbridge\nVeh:"+ payload.vehicleNumber + "\nFirstWt : "+ firstWeight +" kg";
+
+          let smsMessage =  "P.C. Weighbridge\nVeh:"+ payload.vehicleNumber + "\nFirstWt : "+ firstWeight +" kg\n";
           if( secondWeight != ""){
-              smsMessage = smsMessage + "\nSecondWt: "+ secondWeight +" kg\nNet: "+ ntWeight+" kg\n";
+              smsMessage = smsMessage + "SecondWt: "+ secondWeight +" kg\nNet: "+ ntWeight+" kg\n";
+
           }
           smsMessage = smsMessage + "Amt: Rs."+ payload.chargesAmount;
           console.log("SMS Message is :"+ smsMessage);
@@ -579,6 +591,7 @@ const displaySecondWeight = linkedTicketNo ? activeCurrentWeight : 0;
               <span>📦 REPRINT</span>
               <span className="text-[10px] font-medium opacity-70">[F2] or [P]</span>
             </button>
+
           </div>
         </div>
         

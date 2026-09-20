@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MasterDataManagement from './MasterDataManagement';
 import PrinterSettingsManagement from './PrinterSettingsManagement';
+import WhatsAppModal from './WhatsAppModal';
+
 
 export default function SettingsView({ onClose }) {
   const [settingsSubView, setSettingsSubView] = useState('MAIN'); 
@@ -10,6 +12,7 @@ export default function SettingsView({ onClose }) {
   const [vehicleNo, setVehicleNo] = useState('');
   const [tareWeight, setTareWeight] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isWhatsAppOpen, setIsWhatsAppOpen] = useState(false);
 
   // Focus Refs
   const vehicleInputRef = useRef(null);
@@ -170,8 +173,33 @@ export default function SettingsView({ onClose }) {
               Record Tare Weight →
             </span>
           </button>
+              {/* WhatsApp Integration */}
+          <button
+            type="button"
+            onClick={() => setIsWhatsAppOpen(true)}
+            className="bg-white hover:bg-pink-50/60 border-2 border-slate-200 hover:border-pink-500 rounded-2xl p-6 shadow-sm hover:shadow-md transition text-left flex flex-col justify-between h-64 group outline-none focus:ring-4 focus:ring-emerald-100"
+          >
+            <div className="w-14 h-14 bg-pink-100 text-red-600 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition">
+              💬
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-slate-800 mb-1">WhatsApp Config</h2>
+              <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                Link WhatsApp Web via QR code to automatically send weighment receipts and slip notifications to customers.
+              </p>
+            </div>
+            <span className="text-xs font-bold text-pink-600 tracking-wider uppercase group-hover:translate-x-1 transition flex items-center gap-1">
+              <span>Scan QR Code</span>
+              <span>→</span>
+            </span>
+          </button>
         </div>
       </div>
+      <WhatsAppModal
+        isOpen={isWhatsAppOpen}
+        onClose={() => setIsWhatsAppOpen(false)}
+      />
+     
 
       {/* Tare Weight Input Modal */}
       {isTareModalOpen && (
